@@ -118,6 +118,8 @@ Contact
 Questions? Suggestions? Drop me a line:
 Toni (Jarus) Maxx — [x.com/tonimaxx](https://x.com/tonimaxx) | [facebook.com/tonimaxx](https://facebook.com/tonimaxx) | [medium.com/@tonimaxx](https://medium.com/@tonimaxx) | [tonimaxx.com](https://tonimaxx.com) | [tonimaxx@gmail.com](mailto:tonimaxx@gmail.com)
 
-P.S. While I've provided many ways to reach me, email is where I actually check for messages the most. Happy coding!
+P.S. While I've provided many ways to reach me, email is where I actually check for messages the most. Happy coding!  
+
+  
 ![](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*-TwOrWWIeAkaMjwn_o8NEQ.png)
 ![](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*WY8ICWIehJ7YUmHHHAYpew.png)
