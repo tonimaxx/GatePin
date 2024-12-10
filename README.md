@@ -32,7 +32,7 @@ GatePin is a lightweight, user-friendly script for adding PIN-based protection t
 Open the `index.php` file and update the configuration section:
 ```php
 // PIN Configuration
-$basePinValue = 40; // Choose a two-digit base PIN value (e.g., 20, 40, 99).
+$basePinValue = 2900; // Choose a four-digit base PIN value (e.g., 2900, 2000, 4000, 9900).
 date_default_timezone_set('America/Los_Angeles'); // Set timezone to PST.
 
 // UI Configuration

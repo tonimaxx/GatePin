@@ -34,7 +34,12 @@ session_start();
  ***********************/
 // PIN Generation
 date_default_timezone_set('America/Los_Angeles'); // Set timezone to PST
-$basePinValue = 2900; // Configurable base PIN value
+$basePinValue = 2900; // Choose a four-digit base PIN value (e.g., 2900, 2000, 4000, 9900).
+                     // The final PIN is dynamically generated as:
+                     // basePinValue + current day of the month (1-31).
+                     // For example, if basePinValue = 2900 and today is the 15th:
+                     // The final PIN will be 2900 + 15 = 2915.
+                     // This ensures a unique 4-digit PIN each day for added security.
 $currentDay = (int) date('j'); // Get day of month (1-31)
 $correctPin = (string) ($basePinValue + $currentDay); // Calculate PIN: base PIN + day
 
