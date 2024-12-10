@@ -3,6 +3,8 @@
 **Created with love and caffeine by [Toni (Jarus) Maxx](mailto:tonimaxx@gmail.com)** 
 **Dec 10, 2024 — San Ramon, California**
 
+![GatePin](https://miro.medium.com/v2/resize:fit:2000/format:webp/1*CrPOU_C70V6-WLljRkaS8A.png)
+
 ## About GatePin
 
 GatePin is a lightweight, user-friendly script for adding PIN-based protection to your directories. Designed with simplicity and moderate security in mind, GatePin dynamically generates a PIN based on a configurable base value and the current day of the month (PST timezone). It's perfect for protecting non-critical directories from accidental access.
