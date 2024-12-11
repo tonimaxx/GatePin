@@ -357,11 +357,15 @@ function showLoginForm($folderName, $error)
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="filePreviewModalLabel">File Preview</h5>
+                <h5 class="modal-title" id="filePreviewModalLabel"></h5> 
+                <button type="button" id="copyTextButton" class="btn btn-secondary">Copy Text</button>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="filePreviewContent">
                 Loading content...
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="copyTextButton" class="btn btn-secondary">Copy Text</button>
             </div>
         </div>
     </div>
@@ -495,6 +499,28 @@ const previewFile = (filePath, isMarkdown) => {
             document.getElementById('filePreviewContent').textContent = `Error loading file: ${error.message}`;
         });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Copy Text Button Logic
+    const copyTextButton = document.getElementById('copyTextButton');
+    const filePreviewContent = document.getElementById('filePreviewContent');
+    
+    copyTextButton.addEventListener('click', () => {
+        const contentToCopy = filePreviewContent.innerText || filePreviewContent.textContent;
+        
+        navigator.clipboard.writeText(contentToCopy)
+            .then(() => {
+                copyTextButton.textContent = 'Copied!';
+                setTimeout(() => {
+                    copyTextButton.textContent = 'Copy Text';
+                }, 2000);
+            })
+            .catch(err => {
+                console.error('Error copying text:', err);
+                copyTextButton.textContent = 'Failed to Copy';
+            });
+    });
+});
 
 
 document.addEventListener('DOMContentLoaded', () => {
