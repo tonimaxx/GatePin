@@ -1,6 +1,6 @@
 # GatePin: Simple Directory Protection Script
 
-**Created with love and caffeine by [Toni (Jarus) Maxx](mailto:tonimaxx@gmail.com)** 
+**Created with love and caffeine by [Toni (Jarus Soontornsing) Maxx](mailto:tonimaxx@gmail.com)** 
 **Dec 10, 2024 — San Ramon, California**
 
 ![GatePin](https://miro.medium.com/v2/resize:fit:2000/format:webp/1*CrPOU_C70V6-WLljRkaS8A.png)
