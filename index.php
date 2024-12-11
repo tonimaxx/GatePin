@@ -35,11 +35,11 @@ session_start();
 // PIN Generation
 date_default_timezone_set('America/Los_Angeles'); // Set timezone to PST
 $basePinValue = 2900; // Choose a four-digit base PIN value (e.g., 2900, 2000, 4000, 9900).
-                     // The final PIN is dynamically generated as:
-                     // basePinValue + current day of the month (1-31).
-                     // For example, if basePinValue = 2900 and today is the 15th:
-                     // The final PIN will be 2900 + 15 = 2915.
-                     // This ensures a unique 4-digit PIN each day for added security.
+// The final PIN is dynamically generated as:
+// basePinValue + current day of the month (1-31).
+// For example, if basePinValue = 2900 and today is the 15th:
+// The final PIN will be 2900 + 15 = 2915.
+// This ensures a unique 4-digit PIN each day for added security.
 $currentDay = (int) date('j'); // Get day of month (1-31)
 $correctPin = (string) ($basePinValue + $currentDay); // Calculate PIN: base PIN + day
 
@@ -56,6 +56,7 @@ $attemptResetTime = 3600; // Reset attempts after 1 hour
 // Directory Browsing Settings
 $allowDirectoryBrowsing = true; // Enable/disable directory browsing
 $allowedFileTypes = ['php']; // File types to display
+$previewFileTypes = ['txt', 'md', 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'css']; // File types allowed for preview
 
 /************************
  * SESSION MANAGEMENT
@@ -143,7 +144,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             background-color: #f8f9fa;
             cursor: pointer;
         }
-    </style>
+
+        #filePreviewContent {
+            max-height: 90vh;
+            overflow-y: auto;
+            text-align: left;
+            padding: 15px;
+        }
+
+        #filePreviewContent img {
+            max-width: 100%; /* Ensure the image fits within the modal */
+            max-height: 100%; /* Prevent the image from overflowing vertically */
+            margin: 0 auto; /* Center the image */
+            display: block;
+            border-radius: 10px; /* Add some styling */
+        }
+            </style>
 </head>
 <body class="bg-light">
 <?php
@@ -274,34 +290,31 @@ function showAuthenticatedContent($folderName, $allowDirectoryBrowsing)
     $allFiles = glob("$fullPath/*.*");
     foreach ($allFiles as $file) {
         $fileName = basename($file);
-        if ($fileName !== 'index.php') {
-            $extension = pathinfo($fileName, PATHINFO_EXTENSION);
-            // Choose icon based on file extension
-            $icon = match ($extension) {
-                'php' => '🐘',
-                'md' => '📝',
-                'html', 'htm' => '🌐',
-                'css' => '🎨',
-                'js' => '📜',
-                default => '📄'
-            };
-            $isMarkdown = $extension === 'md' ? 'true' : 'false';
+        $extension = pathinfo($fileName, PATHINFO_EXTENSION);
+// Choose icon based on file extension
+        $icon = match ($extension) {
+            'php' => '🐘',
+            'md' => '📝',
+            'html', 'htm' => '🌐',
+            'css' => '🎨',
+            'js' => '📜',
+            default => '📄'
+        };
+        $isMarkdown = $extension === 'md' ? 'true' : 'false';
 
-            if (in_array($extension, ['txt', 'md'])) {
-                $fileUrl = htmlspecialchars($currentPath ? $currentPath . '/' . $fileName : $fileName);
-                echo '<div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                    <a href="' . $fileUrl . '" target="_blank">
-                        ' . $icon . ' ' . htmlspecialchars($fileName) . '
-                    </a>
-                    <a href="#" class="text-primary" onclick="previewFile(\'' . $fileUrl . '\', ' . ($extension === 'md' ? 'true' : 'false') . '); return false;">(Preview)</a>
-                </div>';
-            } else {
-                echo '<a href="' . htmlspecialchars($currentPath ? $currentPath . '/' . $fileName : $fileName) . '"
-                    class="list-group-item list-group-item-action" target="_blank">
-                    ' . $icon . ' ' . htmlspecialchars($fileName) . '
-                </a>';
-            }
-
+        if (in_array($extension, $GLOBALS['previewFileTypes'])) {
+            $fileUrl = htmlspecialchars($currentPath ? $currentPath . '/' . $fileName : $fileName);
+            echo '<div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+        <a href="' . $fileUrl . '" target="_blank">
+            ' . $icon . ' ' . htmlspecialchars($fileName) . '
+        </a>
+        <a href="#" class="text-primary" onclick="previewFile(\'' . $fileUrl . '\', ' . ($extension === 'md' ? 'true' : 'false') . '); return false;">(Preview)</a>
+    </div>';
+        } else {
+            echo '<a href="' . htmlspecialchars($currentPath ? $currentPath . '/' . $fileName : $fileName) . '"
+        class="list-group-item list-group-item-action" target="_blank">
+        ' . $icon . ' ' . htmlspecialchars($fileName) . '
+    </a>';
         }
     }
     echo '</div>';
@@ -428,29 +441,52 @@ toggleButton.addEventListener('click', () => {
 });
 
 
-function previewFile(filePath, isMarkdown) {
+const previewFile = (filePath, isMarkdown) => {
+    const allowedExtensions = <?=json_encode($previewFileTypes)?>;
+    const fileExtension = filePath.split('.').pop().toLowerCase();
+    if (!allowedExtensions.includes(fileExtension)) {
+        console.error('Preview not supported for this file type.');
+        document.getElementById('filePreviewContent').textContent = 'Preview not supported for this file type.';
+        return;
+    }
     console.log('Fetching file:', filePath, 'Is Markdown:', isMarkdown);
     fetch(filePath)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            return response.text();
+            return response.blob(); // Fetch as a blob for handling images
         })
-        .then(content => {
+        .then(blob => {
             const previewContent = document.getElementById('filePreviewContent');
-            if (isMarkdown) {
-                try {
-                    previewContent.innerHTML = marked.parse(content);
-                } catch (error) {
-                    console.error('Error rendering Markdown:', error);
-                    previewContent.textContent = 'Error rendering Markdown.';
-                }
+            const fileExtension = filePath.split('.').pop().toLowerCase();
+            const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
+
+            if (imageExtensions.includes(fileExtension)) {
+                // Handle image display
+                const imageUrl = URL.createObjectURL(blob);
+                previewContent.innerHTML = `<img src="${imageUrl}" alt="Preview" class="img-fluid" style="max-width: 100%; border-radius: 10px;" />`;
+            } else if (isMarkdown) {
+                // Handle Markdown
+                blob.text().then(content => {
+                    try {
+                        previewContent.innerHTML = marked.parse(content);
+                    } catch (error) {
+                        console.error('Error rendering Markdown:', error);
+                        previewContent.textContent = 'Error rendering Markdown.';
+                    }
+                });
             } else {
-                previewContent.textContent = content;
+                // Handle other text content
+                blob.text().then(content => {
+                    previewContent.textContent = content;
+                });
             }
+
+            // Show modal
             const modal = new bootstrap.Modal(document.getElementById('filePreviewModal'), {
-                backdrop: 'static'
+                backdrop: true  // true = With backdrop + Allow closing modal by clicking outside
+                                // 'static' for allow close button only
             });
             modal.show();
         })
