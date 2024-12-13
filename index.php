@@ -108,7 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DATATOGO.ORG - <?=htmlspecialchars($currentFolder)?></title>
+    <title>GatePin - <?=htmlspecialchars($currentFolder)?></title>
     <script src="https://cdn.jsdelivr.net/npm/marked@4.0.16/marked.min.js"></script>
 
     <!-- Styles -->
@@ -338,7 +338,8 @@ function showLoginForm($folderName, $error)
         echo '<input type="text" name="pin[]" maxlength="1"
                  class="form-control text-center" required '
             . ($i === 1 ? 'autofocus ' : '')
-            . 'id="pin' . $i . '" oninput="moveFocus(' . $i . ')">';
+            . 'id="pin' . $i . '" oninput="moveFocus(' . $i . ')"
+                 inputmode="numeric" pattern="[0-9]*">';
     }
 
     echo '</div>';
@@ -351,6 +352,7 @@ function showLoginForm($folderName, $error)
     echo '<div class="text-muted">Enter PIN to access ' . htmlspecialchars($folderName) . '</div>
           </form></div></div></div>';
 }
+
 ?>
 
 <div class="modal fade" id="filePreviewModal" tabindex="-1" aria-labelledby="filePreviewModalLabel" aria-hidden="true">
