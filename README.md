@@ -51,15 +51,15 @@ Example Usage
 Scenario: Protecting a Directory
 
 1. Place index.php in your secure_folder/ directory.
-2. Set $basePinValue = 50 in the configuration.
+2. Set $basePinValue = 2900 in the configuration.
 3. Access secure_folder/ in a browser.
-4. The PIN for today (e.g., Dec 10) is: 50 + 10 = 60.
+4. The PIN for today (e.g., Dec 10) is: 2900 + 10 = 2910.
 ```
 
 Features in Detail
 **Dynamic PIN Calculation**
 - The PIN is calculated as: `PIN = basePinValue + currentDay`
-- Example: If `basePinValue = 40` and today is the 15th, the PIN is 40 + 15 = 55.
+- Example: If `basePinValue = 4000` and today is the 15th, the PIN is 4000 + 15 = 4015.
 
 **Brute Force Protection**
 - Users are locked out after `$maxAttempts` consecutive failed attempts.
